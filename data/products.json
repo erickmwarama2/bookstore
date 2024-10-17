@@ -3,14 +3,14 @@
     "id": "1143223",
     "title": "A Book",
     "imageUrl": "https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg",
-    "description": "This is an awesome book!",
-    "price": "19"
+    "description": "This is an awesome book! It is a really good book!!",
+    "price": "19.85"
   },
   {
-    "title": "New product",
+    "id": "4375",
+    "title": "The Best Book",
     "imageUrl": "https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg",
-    "description": "A new product",
-    "price": "25.50",
-    "id": "5771"
+    "description": "The best book ever!!",
+    "price": "35.25"
   }
 ]

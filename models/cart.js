@@ -8,6 +8,26 @@ const p = path.join(
 );
 
 module.exports = class Cart {
+  static deleteProduct(id, price) {
+    fs.readFile(p, (err, fileContent) => {
+      if (err) {
+        return;
+      }
+      const cart = JSON.parse(fileContent);
+      const updatedCart = {...cart };
+      const product = cart.products.find(prod => prod.id === id);
+      const productQty = product.qty;
+      updatedCart.totalPrice -= (price * productQty);
+      updatedCart.products = updatedCart.products.filter(prod => prod.id !== id);
+
+      fs.writeFile(p, JSON.stringify(updatedCart), (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
+    });
+  }
+
   static addProduct(id, productPrice) {
     fs.readFile(p, (err, fileContent) => {
         let cart = { products: [], totalPrice: 0};
