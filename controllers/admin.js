@@ -21,13 +21,21 @@ exports.postAddProduct = async (req, res, next) => {
   // const product = new Product(null, title, imageUrl, description, price);
   // const result = await product.save();
   try {
-    const result = await Product.create({
+    const result = await req.user.createProduct({
       title,
       price,
       imageUrl,
-      description,
+      description
     });
-    // console.log(result);
+
+    // const result = await Product.create({
+    //   title,
+    //   price,
+    //   imageUrl,
+    //   description,
+    //   userId: req.user.id
+    // });
+
     console.log("Product created");
     res.redirect("/admin/products");
   } catch (error) {
@@ -89,7 +97,10 @@ exports.getEditProduct = async (req, res, next) => {
   // const [rows] = await Product.findById(prodId);
   // const product = rows[0];
   try {
-    const product = await Product.findByPk(prodId);
+    // const product = await Product.findByPk(prodId);
+
+    const products = await req.user.getProducts({ where: { id: prodId }});
+    const product = products[0];
 
     res.render("admin/edit-product", {
       pageTitle: "Edit Product",
@@ -114,7 +125,8 @@ exports.getProducts = async (req, res, next) => {
   //   });
   // });
   try {
-    const products = await Product.findAll();
+    // const products = await Product.findAll();
+    const products = await req.user.getProducts();
     res.render("admin/products", {
       prods: products,
       pageTitle: "Admin Products",

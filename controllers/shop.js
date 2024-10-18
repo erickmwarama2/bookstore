@@ -62,13 +62,23 @@ exports.getProduct = async (req, res, next) => {
   }
 };
 
-exports.postCart = (req, res, next) => {
-  const prodId = req.body.productId;
-  console.log(`Add to cart product id: ${prodId}`);
-  Product.findById(prodId, (product) => {
-    Cart.addProduct(prodId, product.price);
-  });
-  res.redirect("/");
+exports.postCart = async (req, res, next) => {
+  try {
+    const prodId = req.body.productId;
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts({ where : { id: prodId }});
+    let product = products.length > 0 ? products[0] : undefined;
+    let newQty = 1;
+    if (product) {
+      newQty = product.cartItem.quantity + 1;
+    } else {
+      product = await Product.findByPk(prodId);
+    }
+    cart.addProduct(product, { through: { quantity: newQty }});
+    return res.redirect('/cart');
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getIndex = async (req, res, next) => {
@@ -92,11 +102,20 @@ exports.getIndex = async (req, res, next) => {
   }
 };
 
-exports.getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    path: "/cart",
-    pageTitle: "Your Cart",
-  });
+exports.getCart = async (req, res, next) => {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+    // console.log(cart);
+    res.render("shop/cart", {
+      path: "/cart",
+      pageTitle: "Your Cart",
+      products,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+
 };
 
 exports.getOrders = (req, res, next) => {
