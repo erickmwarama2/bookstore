@@ -1,7 +1,8 @@
 // const Product = require("../models/product");
 // const Product = require('../models/productModel');
 const Product = require("../models/productSequelize");
-const Cart = require("../models/cart");
+// const Cart = require("../models/cart");
+// const Order = require("../models/order");
 
 exports.getProducts = async (req, res, next) => {
   // Product.fetchAll((products) => {
@@ -81,6 +82,22 @@ exports.postCart = async (req, res, next) => {
   }
 };
 
+exports.postOrder = async (req, res, next) => {
+  try {
+    const cart = await req.user.getCart();
+    const products = await cart.getProducts();
+    const order = await req.user.createOrder();
+    const result = await order.addProducts(products.map(p => {
+      p.orderItem = { quantity: p.cartItem.quantity };
+      return p;
+    }));
+    cart.setProducts(null);
+    return res.redirect('/orders');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.getIndex = async (req, res, next) => {
   // Product.fetchAll((products) => {
   //   res.render("shop/index", {
@@ -118,11 +135,18 @@ exports.getCart = async (req, res, next) => {
 
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", {
-    path: "/orders",
-    pageTitle: "Your Orders",
-  });
+exports.getOrders = async (req, res, next) => {
+  try {
+    const orders = await req.user.getOrders({ include: ['products']});
+    // console.log(orders);
+    res.render("shop/orders", {
+      path: "/orders",
+      pageTitle: "Your Orders",
+      orders,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getCheckout = (req, res, next) => {
