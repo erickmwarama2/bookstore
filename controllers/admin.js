@@ -1,6 +1,9 @@
 // const Product = require("../models/product");
 // const Product = require("../models/productModel");
-const Product = require("../models/productSequelize");
+
+// const Product = require("../models/productSequelize");
+
+const Product = require("../models/mongo/product");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
