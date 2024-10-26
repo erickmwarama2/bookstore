@@ -84,14 +84,7 @@ exports.postCart = async (req, res, next) => {
 
 exports.postOrder = async (req, res, next) => {
   try {
-    const cart = await req.user.getCart();
-    const products = await cart.getProducts();
-    const order = await req.user.createOrder();
-    const result = await order.addProducts(products.map(p => {
-      p.orderItem = { quantity: p.cartItem.quantity };
-      return p;
-    }));
-    cart.setProducts(null);
+    await req.user.addOrder();
     return res.redirect('/orders');
   } catch (error) {
     console.log(error);
@@ -99,16 +92,8 @@ exports.postOrder = async (req, res, next) => {
 };
 
 exports.getIndex = async (req, res, next) => {
-  // Product.fetchAll((products) => {
-  //   res.render("shop/index", {
-  //     prods: products,
-  //     pageTitle: "Shop",
-  //     path: "/",
-  //   });
-  // });
   try {
     const products = await Product.findAll();
-    // const [rows, _metaData] = await Product.fetchAll();
     res.render("shop/index", {
       prods: products,
       pageTitle: "Shop",

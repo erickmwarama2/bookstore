@@ -20,7 +20,7 @@ exports.postAddProduct = async (req, res, next) => {
 
   try {
 
-    const product = new Product(title, price, description, imageUrl);
+    const product = new Product(title, price, description, imageUrl, req.user._id);
     await product.save();
     console.log("Product created");
     res.redirect("/admin/products");
@@ -35,7 +35,7 @@ exports.postEditProduct = async (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const productId = req.body.productId;
-  const product = new Product(title, price, description, imageUrl, new mongodb.ObjectId(productId));
+  const product = new Product(title, price, description, imageUrl, req.user._id, new mongodb.ObjectId(productId));
 
     try {
       await product.save();
