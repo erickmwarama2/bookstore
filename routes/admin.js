@@ -2,7 +2,7 @@ const path = require('path');
 
 const express = require('express');
 
-const adminController = require('../controllers/mongo/admin');
+const adminController = require('../controllers/mongoose/admin');
 
 const router = express.Router();
 
